@@ -4,24 +4,26 @@ const $time = document.querySelector("#time");
 const $result = document.querySelector("#result");
 const $timeHeader = document.querySelector("#time-header");
 const $resultHeader = document.querySelector("#result-header");
+const $gameTime = document.querySelector("#game-time");
 
 let score = 0;
 let isGameStarted = false;
 
+// Events
 $start.addEventListener('click', startGame);
 $game.addEventListener('click', handleBoxClick);
+$gameTime.addEventListener('input', setGameTime);
 
 // Run Game
 function startGame() {
     score = 0;
-    setGameTime();
-
-    $timeHeader.classList.remove('hide');
-    $resultHeader.classList.add('hide');
-
     isGameStarted = true;
     $game.style.backgroundColor = '#fff';
-    $start.classList.add('hide');
+
+    hide($start);
+    setGameTime();
+
+    $gameTime.setAttribute('disabled', 'true');
 
     const interval = setInterval(function () {
         let time = parseFloat($time.textContent);
@@ -37,9 +39,13 @@ function startGame() {
     renderBox();
 }
 
+// Set Game Time
 function setGameTime() {
-    const time = 5;
+    const time = +$gameTime.value;
     $time.textContent = time.toFixed(1);
+
+    show($timeHeader);
+    hide($resultHeader);
 }
 
 function setGameScore() {
@@ -49,11 +55,12 @@ function setGameScore() {
 // Finish Game
 function endGame() {
     isGameStarted = false;
-    $start.classList.remove('hide');
+    show($start);
     $game.style.backgroundColor = '#ccc';
     $game.innerHTML = '';
     $timeHeader.classList.add('hide');
-    $resultHeader.classList.remove('hide');
+    show($resultHeader);
+    $gameTime.removeAttribute('disabled');
     setGameScore();
 }
 
@@ -93,4 +100,12 @@ function renderBox() {
 // Generate Random Number
 function getRandom(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
+}
+
+function show($el) {
+    $el.classList.remove('hide');
+}
+
+function hide($el) {
+    $el.classList.add('hide');
 }
